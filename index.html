@@ -8,8 +8,35 @@
 	</head>
 	<body>
 		<div id="container">
+			<div id="modalWindow" class="modal">
+				<div class="modal-content">
+
+					<span class="close">&times;</span>
+					<div id="addbookTitle">Add Book?</div>
+
+					<label>Title:<input id="title-input" type="text"></label><br>
+				
+					<label>Author:<input id="author-input" type="text"></label><br>
+					
+					<label># of Pages:<input id="numPages-input" type="text"></label><br>
+					
+					<label>Read<input type="radio" name="hasReadOption" id="hasRead"></label><label>Not Read <input type="radio" name="hasReadOption" id="hasNotRead"></label><br>
+					
+					<input id="submit" type="submit" value="Submit">		
+				</div>
+			</div>
 			<div id="title">Good Reads</div>
+			<div class="booklist">
+				<div class="book">
+					Hardboiled Wonder Land <br>
+					by: Murakami<br>
+					pages: 405 <br>
+					Read<br>
+				</div>
+			</div>
 			<button id="add-book">Add Book</button>
+			<button id="edit-book">Edit Book</button>
+			<button id="remove-book">Remove Book</button>
 
 		</div>
 	</body>
