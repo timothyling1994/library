@@ -15,10 +15,28 @@ class Book {
 function updateDisplay(index)
 {
   const newDiv = document.createElement("div");
-  const newContent = document.createTextNode(myLibrary[index].name);
-  newDiv.appendChild(newContent);
+
+  const book = myLibrary[index];
+
+  for (let prop in book)
+  {
+    const newContent = document.createTextNode(prop + ": " + book[prop]);
+    const br = document.createElement("br");
+
+    newDiv.appendChild(newContent);
+    newDiv.appendChild(br);
+  }
+
   newDiv.classList.add("book");
   newDiv.setAttribute('data-attribute',index);
+
+  const editButton = document.createElement("button");
+  const newContent = document.createTextNode(prop + ": " + book[prop]);
+
+  const deleteButton = document.createElement("button");
+
+
+
 
   const booklist = document.querySelector(".booklist");
   booklist.appendChild(newDiv,booklist);
