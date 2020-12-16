@@ -75,10 +75,9 @@ function addBookToLibrary()
   modal.style.display = "none";
 
   updateDisplay(index);
-  
-  title.value="";
-  author.value="";
-  numPages.value="";
+  document.querySelector("#title-input").value="";
+  document.querySelector("#author-input").value="";
+  document.querySelector("#numPages-input").value="";
 }
 
 
