@@ -31,12 +31,20 @@ html,body{
 	border: 5px solid black;
 }
 
+button{
+	display: flex;
+	flex-direction:row;
+	justify-content:left;
+	align-items:center;
+}
+
 .book
 {
 	height:300px;
 	width:200px;
 	display: flex;
-	line-height:2em;
+	flex-wrap: wrap;
+	line-height:1em;
 	flex-direction:row;
 	border: 5px solid purple;
 	justify-content:center;

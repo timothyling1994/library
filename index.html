@@ -25,13 +25,30 @@
 					<input id="submit" type="submit" value="Submit">		
 				</div>
 			</div>
+
+			<div id="editModalWindow" class="modal">
+				<div class="modal-content">
+
+					<span class="close">&times;</span>
+					<div id="editBook">Edit Book?</div>
+
+					<label>Title:<input id="edit-title-input" type="text"></label><br>
+				
+					<label>Author:<input id="edit-author-input" type="text"></label><br>
+					
+					<label># of Pages:<input id="edit-numPages-input" type="text"></label><br>
+					
+					<label>Read<input type="radio" name="hasReadOption" id="edit-hasRead"></label><label>Not Read <input type="radio" name="hasReadOption" id="edit-hasNotRead"></label><br>
+					
+					<input id="submit-edits" type="submit" value="Submit">		
+				</div>
+			</div>
 			<div id="title">Good Reads</div>
 			<div class="booklist">
 
 			</div>
 			<button id="add-book">Add Book</button>
-			<button id="edit-book">Edit Book</button>
-			<button id="remove-book">Remove Book</button>
+	
 
 		</div>
 	</body>
