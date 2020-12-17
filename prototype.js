@@ -1,4 +1,5 @@
 let myLibrary = [];
+let typeofStorage ="";
 
 class Book {
   constructor(name,author,numPages,hasRead,id)
@@ -52,8 +53,32 @@ function updateDisplay(index)
   
 }
 
+function populateStorage()
+{
+  let storage;
+  storage = window['localStorage'];
+  storage.setItem('myLibrary', JSON.stringify(myLibrary));
+
+}
+
+function loadFromStorage()
+{
+  let storage;
+  storage = window['localStorage'];
+  if(JSON.parse(storage.getItem('myLibrary')) != null)
+  {
+    myLibrary = JSON.parse(storage.getItem('myLibrary'));
+  }
+
+  for(let i=0;i<myLibrary.length;i++)
+  {
+    updateDisplay(parseInt(myLibrary[i].id));
+  }
+}
+
 function addBookToLibrary()
 {
+
   let title = document.querySelector("#title-input").value;
   let author = document.querySelector("#author-input").value;
   let numPages = document.querySelector("#numPages-input").value;
@@ -71,6 +96,13 @@ function addBookToLibrary()
   
   myLibrary.push(bookObj);
 
+  if (storageAvailable('localStorage')) {
+    populateStorage();
+  }
+  else {
+    console.log("Local Storage not available");
+  }
+
   let modal = document.getElementById("modalWindow");
   modal.style.display = "none";
 
@@ -78,6 +110,7 @@ function addBookToLibrary()
   document.querySelector("#title-input").value="";
   document.querySelector("#author-input").value="";
   document.querySelector("#numPages-input").value="";
+
 }
 
 
@@ -122,9 +155,13 @@ function editBook()
   let hasRead_placeholder = myLibrary[editIndex].hasRead;
 
 
-  edit_title.setAttribute("placeholder",name_placeholder); 
-  edit_author.setAttribute("placeholder",author_placeholder); 
-  edit_numPages.setAttribute("placeholder",numPages_placeholder);
+  //edit_title.setAttribute("placeholder",name_placeholder); 
+  //edit_author.setAttribute("placeholder",author_placeholder); 
+  //edit_numPages.setAttribute("placeholder",numPages_placeholder);
+
+  edit_title.value=name_placeholder; 
+  edit_author.value=author_placeholder; 
+  edit_numPages.value=numPages_placeholder;
 
   if(hasRead_placeholder==true)
   {
@@ -155,6 +192,13 @@ function editBook()
     editDiv.childNodes[4].nodeValue = "numPages: " + myLibrary[editIndex].numPages;
     editDiv.childNodes[6].nodeValue = "hasRead: " + myLibrary[editIndex].hasRead;
 
+    if (storageAvailable('localStorage')) {
+      populateStorage();
+    }
+    else {
+      console.log("Local Storage not available");
+    }
+
     editModal.style.display = "none";
     edit_title.value="";
     edit_author.value="";
@@ -183,9 +227,43 @@ function removeBook()
     bookNodeList[i].childNodes[8].nodeValue = "id: " + i;
 
   }
+
+  if (storageAvailable('localStorage')) {
+    populateStorage();
+  }
+  else {
+    console.log("Local Storage not available");
+  }
+}
+
+function storageAvailable(type) {
+    var storage;
+    try {
+        storage = window[type];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+    }
 }
 
 function theDomHasLoaded(e) {
+
+  loadFromStorage();
 
   let modal = document.getElementById("modalWindow");
   // Get the button that opens the modal

@@ -9,7 +9,6 @@ html,body{
 	justify-content:center;
 	align-items:center;
 	height:100%;
-	background-color: pink;
 	flex-wrap:wrap;
 	text-align: center;
 }
@@ -28,7 +27,15 @@ html,body{
 	flex-wrap: wrap;
 
 	width:100%;
-	border: 5px solid black;
+	border: 1px solid black;
+}
+
+#button-row{
+	display: flex;
+	flex-direction:row;
+	align-items:center;
+	justify-content:center;
+	width:100%;
 }
 
 button{
@@ -52,9 +59,10 @@ button{
 	margin:10px;
 }
 
-#addbookTitle{
+#addbookTitle,#editBook{
 	font-size: 35px;
 	margin-bottom:25px;
+	width:100%;
 }
 
 .modal {
@@ -102,9 +110,6 @@ button{
   cursor: pointer;
 }
 
-#addbookTitle{
-	width:100%;
-}
 
 label
 {
@@ -113,7 +118,7 @@ label
 	justify-content: flex-end;
 	
 	text-align: center;
-	width: 40%;
+	width: 33%;
 	line-height: 26px;
 	margin-bottom: 10px;
 	
@@ -125,7 +130,7 @@ input
 	flex-direction: row;
 	justify-content: flex-start;
 
-	width: 50%;
+	width: 66%;
 	height: 20px;
 	flex: 0 0 200px;
 	margin-left: 10px;
