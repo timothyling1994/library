@@ -1,5 +1,6 @@
 let myLibrary = [];
 let typeofStorage ="";
+let dbRefObject={};
 
 class Book {
   constructor(name,author,numPages,hasRead,id)
@@ -13,8 +14,20 @@ class Book {
 
 }
 
+function clearDisplay()
+{
+  let bookNodeList = document.querySelectorAll('.book');
+  for (let i=0;i<bookNodeList.length;i++)
+  {
+    bookNodeList[i].remove();
+  }
+  
+}
+
 function updateDisplay(index)
 {
+  console.log("updateDisplay");
+
   const newDiv = document.createElement("div");
 
   const book = myLibrary[index];
@@ -55,30 +68,83 @@ function updateDisplay(index)
 
 function populateStorage()
 {
-  let storage;
-  storage = window['localStorage'];
-  storage.setItem('myLibrary', JSON.stringify(myLibrary));
+  if(typeofStorage=="localStorage" && storageAvailable('localStorage'))
+  {
+    let storage;
+    storage = window['localStorage'];
+    storage.setItem('myLibrary', JSON.stringify(myLibrary));
+  }
+  else if(typeofStorage=="fireBase")
+  {
+    dbRefObject.set(JSON.stringify(myLibrary),(error)=>{
+      if(error)
+      {
+        console.log("firebase write is unsuccessful.");
+      }
+      else
+      {
+        console.log("firebase write is successful.");
+      }
+    });
+  }
 
 }
 
 function loadFromStorage()
 {
-  let storage;
-  storage = window['localStorage'];
-  if(JSON.parse(storage.getItem('myLibrary')) != null)
+  if(typeofStorage=="localStorage")
   {
-    myLibrary = JSON.parse(storage.getItem('myLibrary'));
-  }
+    let storage;
+    storage = window['localStorage'];
+    if(JSON.parse(storage.getItem('myLibrary')) != null)
+    {
+      myLibrary = JSON.parse(storage.getItem('myLibrary'));
+    }
 
-  for(let i=0;i<myLibrary.length;i++)
+    for(let i=0;i<myLibrary.length;i++)
+    {
+      updateDisplay(myLibrary[i].id);
+    }
+  }
+  else if (typeofStorage=="fireBase")
   {
-    updateDisplay(parseInt(myLibrary[i].id));
+  
+    var firebaseConfig = {
+      apiKey: "AIzaSyC42iDC2MA3AuLPN7vnFjuzs-EdT7ayLRg",
+      authDomain: "my-library-fddd3.firebaseapp.com",
+      projectId: "my-library-fddd3",
+      storageBucket: "my-library-fddd3.appspot.com",
+      messagingSenderId: "736861192413",
+      appId: "1:736861192413:web:b65296d2cb94a4e3901b34",
+      measurementId: "G-ZJVDHJJVC7"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    dbRefObject = firebase.database().ref();
+
+    dbRefObject.on('value',snap=>{
+      
+      clearDisplay();
+
+      if(snap.val() != null)
+      {
+
+        myLibrary = JSON.parse(snap.val());
+        for(let i=0;i<myLibrary.length;i++)
+        {
+          updateDisplay(myLibrary[i].id);
+        }     
+      }
+    });
+
+
+  
   }
 }
 
 function addBookToLibrary()
 {
-
+  console.log("once");
   let title = document.querySelector("#title-input").value;
   let author = document.querySelector("#author-input").value;
   let numPages = document.querySelector("#numPages-input").value;
@@ -90,23 +156,21 @@ function addBookToLibrary()
     hasRead=true;
   }
 
-
   let index = myLibrary.length;
   let bookObj = new Book(title,author,numPages,hasRead,index);
   
   myLibrary.push(bookObj);
+  
+  populateStorage();
 
-  if (storageAvailable('localStorage')) {
-    populateStorage();
-  }
-  else {
-    console.log("Local Storage not available");
+  if(typeofStorage=="localStorage")
+  {
+    updateDisplay(index);
   }
 
   let modal = document.getElementById("modalWindow");
   modal.style.display = "none";
 
-  updateDisplay(index);
   document.querySelector("#title-input").value="";
   document.querySelector("#author-input").value="";
   document.querySelector("#numPages-input").value="";
@@ -192,12 +256,9 @@ function editBook()
     editDiv.childNodes[4].nodeValue = "numPages: " + myLibrary[editIndex].numPages;
     editDiv.childNodes[6].nodeValue = "hasRead: " + myLibrary[editIndex].hasRead;
 
-    if (storageAvailable('localStorage')) {
-      populateStorage();
-    }
-    else {
-      console.log("Local Storage not available");
-    }
+    
+    populateStorage();
+  
 
     editModal.style.display = "none";
     edit_title.value="";
@@ -228,12 +289,9 @@ function removeBook()
 
   }
 
-  if (storageAvailable('localStorage')) {
-    populateStorage();
-  }
-  else {
-    console.log("Local Storage not available");
-  }
+
+  populateStorage();
+
 }
 
 function storageAvailable(type) {
@@ -263,7 +321,28 @@ function storageAvailable(type) {
 
 function theDomHasLoaded(e) {
 
-  loadFromStorage();
+  let localStorageOption = document.getElementById("localStorageOption");
+  let fireBaseOption = document.getElementById("fireBaseOption");
+  let addbookBtn = document.getElementById("add-book");
+
+  localStorageOption.addEventListener("click",function(){
+    typeofStorage = "localStorage";
+    localStorageOption.style.display="none";
+    fireBaseOption.style.display="none";
+    addbookBtn.style.display="block";
+    loadFromStorage();
+
+  });
+
+  
+  fireBaseOption.addEventListener("click",function(){
+    typeofStorage = "fireBase";
+    localStorageOption.style.display="none";
+    fireBaseOption.style.display="none";
+    addbookBtn.style.display="block";
+    loadFromStorage();
+  });
+
 
   let modal = document.getElementById("modalWindow");
   // Get the button that opens the modal
