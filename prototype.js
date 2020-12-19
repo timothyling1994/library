@@ -1,6 +1,7 @@
 let myLibrary = [];
 let typeofStorage ="";
 let dbRefObject={};
+var ui = {};
 
 class Book {
   constructor(name,author,numPages,hasRead,id)
@@ -108,20 +109,8 @@ function loadFromStorage()
   }
   else if (typeofStorage=="fireBase")
   {
-  
-    var firebaseConfig = {
-      apiKey: "AIzaSyC42iDC2MA3AuLPN7vnFjuzs-EdT7ayLRg",
-      authDomain: "my-library-fddd3.firebaseapp.com",
-      projectId: "my-library-fddd3",
-      storageBucket: "my-library-fddd3.appspot.com",
-      messagingSenderId: "736861192413",
-      appId: "1:736861192413:web:b65296d2cb94a4e3901b34",
-      measurementId: "G-ZJVDHJJVC7"
-    };
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
     dbRefObject = firebase.database().ref();
-
     dbRefObject.on('value',snap=>{
       
       clearDisplay();
@@ -336,11 +325,60 @@ function theDomHasLoaded(e) {
 
   
   fireBaseOption.addEventListener("click",function(){
+    
     typeofStorage = "fireBase";
     localStorageOption.style.display="none";
     fireBaseOption.style.display="none";
-    addbookBtn.style.display="block";
-    loadFromStorage();
+    //addbookBtn.style.display="block";
+
+    var firebaseConfig = {
+      apiKey: "AIzaSyC42iDC2MA3AuLPN7vnFjuzs-EdT7ayLRg",
+      authDomain: "my-library-fddd3.firebaseapp.com",
+      projectId: "my-library-fddd3",
+      storageBucket: "my-library-fddd3.appspot.com",
+      messagingSenderId: "736861192413",
+      appId: "1:736861192413:web:b65296d2cb94a4e3901b34",
+      measurementId: "G-ZJVDHJJVC7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    // Initialize the FirebaseUI Widget using Firebase.
+    ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+    var uiConfig = {
+      callbacks: {
+        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+          // User successfully signed in.
+          // Return type determines whether we continue the redirect automatically
+          // or whether we leave that to developer to handle.
+          loadFromStorage();
+          return false;
+        },
+        uiShown: function() {
+
+        }
+      },
+      // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+      signInFlow: 'popup',
+      signInSuccessUrl:'',
+      signInOptions: [
+        // Leave the lines as is for the providers you want to offer your users.
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+        firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+        firebase.auth.GithubAuthProvider.PROVIDER_ID,
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        firebase.auth.PhoneAuthProvider.PROVIDER_ID
+      ],
+      // Terms of service url.
+      tosUrl: '<your-tos-url>',
+      // Privacy policy url.
+      privacyPolicyUrl: '<your-privacy-policy-url>'
+    };
+
+    ui.start('#firebaseui-auth-container', uiConfig);
+
+
+      
   });
 
 
