@@ -77,6 +77,8 @@ function populateStorage()
   }
   else if(typeofStorage=="fireBase")
   {
+    var userId = firebase.auth().currentUser.uid;
+    
     dbRefObject.set(JSON.stringify(myLibrary),(error)=>{
       if(error)
       {
@@ -109,8 +111,10 @@ function loadFromStorage()
   }
   else if (typeofStorage=="fireBase")
   {
+    let userId = firebase.auth().currentUser.uid;
+    console.log("userid:"+userId);
     // Initialize Firebase
-    dbRefObject = firebase.database().ref();
+    dbRefObject = firebase.database().ref('users/'+userId);
     dbRefObject.on('value',snap=>{
       
       clearDisplay();
@@ -350,6 +354,9 @@ function theDomHasLoaded(e) {
           // User successfully signed in.
           // Return type determines whether we continue the redirect automatically
           // or whether we leave that to developer to handle.
+          //FirebaseUser user = FirebaseAuth.get
+          console.log("authenticated");
+          addbookBtn.style.display="block";
           loadFromStorage();
           return false;
         },
